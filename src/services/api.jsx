@@ -3,8 +3,8 @@ import axios from "axios";
 class Api {
   constructor() {
     this.api = axios.create({
-      // baseURL: "https://fast-between-communicate-witch.trycloudflare.com/api",
-      baseURL: "http://localhost:5252/api",
+      baseURL: "https://santa-neutral-isbn-providing.trycloudflare.com/api",
+      // baseURL: "http://localhost:5252/api",
       // baseURL: "https://jsonplaceholder.typicode.com",
       headers: {
         "Content-Type": "application/json",
