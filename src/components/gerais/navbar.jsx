@@ -6,8 +6,8 @@ export default function Navbar() {
   function onLogoff(){
     localStorage.removeItem("token");
 
-    //referente a "RedirecionaParaLogin" na api.jsx
-    window.location.href = "/gerenciamento_ti_front/";
+    //todo: referente a "RedirecionaParaLogin" na api.jsx
+    window.location.href = "/GerenciamentoTi-Front/";
   }
 
   return (

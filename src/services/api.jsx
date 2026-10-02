@@ -26,7 +26,7 @@ class Api {
 
     function RediriecionaParaLogin() {
       localStorage.removeItem("token");
-      window.location.href = "/gerenciamento_ti_front/";
+      window.location.href = "/GerenciamentoTi-Front/";
     }
 
     // Trata respostas de erro
