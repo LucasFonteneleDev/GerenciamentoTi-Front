@@ -5,9 +5,13 @@ import TextAreaSend from './textAreaSend'
 import Api from '../../services/api';
 import { Await } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import loadingIcon from '../../assets/Loading_icon.gif';
 
 export default function pageChamados() {
     const [IdChamadoSelecionado, setChamadoSelecionado] = useState(null);
+
+    const [carregando, setCarregando] = useState(false);
+
     //lista de mensagens abertas atualmente.
     const [Mensagens, setMensagens] = useState()
 
@@ -29,8 +33,15 @@ export default function pageChamados() {
     }, [IdChamadoSelecionado]);
 
     async function CarregaMensagensChamado() {
-        await Api.get("MensagemChamado/listagem/" + IdChamadoSelecionado)
-            .then(data => setMensagens(data));
+        setCarregando(true);
+
+        try {
+            var data = await Api.get("MensagemChamado/listagem/" + IdChamadoSelecionado);
+            setMensagens(data);
+
+        } finally {
+            setCarregando(false);
+        }
     }
 
     //usuario que envia (DEMONSTRAÇÃO)
@@ -90,19 +101,26 @@ export default function pageChamados() {
                         <div className="flex-grow-1 overflow-auto bg-light rounded">
                             <ul className="list-unstyled m-1" >
                                 {
-                                    Mensagens ? Mensagens.map((mensagem) =>
-                                        <li className="d-flex mb-4">
-                                            <MessageCard
-                                                //todo: na api definir via token quem está logado(??)
-                                                recebendo={mensagem.usuarioChamadoId != decoded.sub}
-                                                texto={mensagem.texto}
-                                                //todo: melhorar a visualização das mensagens
-                                                usuarioNome={mensagem.usuarioChamadoNome}
-                                            // foto={Usuarios[mensagem.id_usuario].foto}
-                                            />
+                                    carregando ? (<img
+                                        src={loadingIcon}
+                                        alt="Carregando..."
+                                        style={{ width: "75px" }}
+                                    />
+                                    ) : (
+                                        Mensagens?.map((mensagem) =>
+                                            <li className="d-flex mb-4">
+                                                <MessageCard
+                                                    //todo: na api definir via token quem está logado(??)
+                                                    recebendo={mensagem.usuarioChamadoId != decoded.sub}
+                                                    texto={mensagem.texto}
+                                                    //todo: melhorar a visualização das mensagens
+                                                    usuarioNome={mensagem.usuarioChamadoNome}
+                                                // foto={Usuarios[mensagem.id_usuario].foto}
+                                                />
 
-                                        </li>
-                                    ) : null
+                                            </li>
+                                        )
+                                    )
                                 }
                             </ul>
                             <div ref={fimMensagensRef} />

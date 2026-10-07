@@ -3,6 +3,7 @@ import CardChamado from './cardChamado';
 import api from '../../services/api';
 import ModalCadastro from '../gerais/modalCadastro';
 import { schema_cadastro } from '../../schemas/chamadoSchema';
+import loadingIcon from '../../assets/Loading_icon.gif';
 
 export default function ListaCardChamados({ onSelectChamado }) {
   const [busca, setBusca] = useState("");
@@ -10,6 +11,8 @@ export default function ListaCardChamados({ onSelectChamado }) {
   const [CHAMADOS, setChamados] = useState([]);
 
   const [mostraModalChamado, setMostraModalChamado] = useState(false);
+
+  const [carregando, setCarregando] = useState(false);
 
   function SetChamado(idchamado) {
     setIdChamadoSelecionado(idchamado);
@@ -21,8 +24,14 @@ export default function ListaCardChamados({ onSelectChamado }) {
   }, []);
 
   async function CarregaChamados() {
-    await api.get("Chamado/listagem")
-      .then(data => setChamados(data));
+    setCarregando(true);
+
+    try {
+      const data = await api.get("Chamado/listagem");
+      setChamados(data);
+    } finally {
+      setCarregando(false);
+    }
   }
 
   const filtrados = CHAMADOS.filter(chamado => {
@@ -94,20 +103,30 @@ export default function ListaCardChamados({ onSelectChamado }) {
         <div className="flex-grow-1 overflow-auto">
           <ul className="list-unstyled mb-0">
 
-            {filtrados.map((chamado) => (
-              <CardChamado
-                chamado={chamado}
-                key={chamado.id}
-                qtdNaoLida={1}
-                onClick={() => {
-                  SetChamado(chamado.id);
-                }}
-                selecionado={chamado.id == IdChamadoSelecionado}
+            {carregando ? (
+              <div className="text-center">
+                <img
+                  src={loadingIcon}
+                  alt="Carregando..."
+                  style={{ width: "75px" }}
+                />
+              </div>
+            ) : (
+              filtrados.map((chamado) => (
+                <CardChamado
+                  chamado={chamado}
+                  key={chamado.id}
+                  qtdNaoLida={1}
+                  onClick={() => {
+                    SetChamado(chamado.id);
+                  }}
+                  selecionado={chamado.id == IdChamadoSelecionado}
 
-                onExcluir={excluir}
-                onEditar={editar}
-              />
-            ))}
+                  onExcluir={excluir}
+                  onEditar={editar}
+                />
+              ))
+            )}
 
           </ul>
         </div>
