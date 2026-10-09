@@ -7,6 +7,8 @@ import { Await } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import loadingIcon from '../../assets/Loading_icon.gif';
 
+
+//todo: implementar socket.io para comunicação bidirecional com o servidor (mensagens)
 export default function pageChamados() {
     const [IdChamadoSelecionado, setChamadoSelecionado] = useState(null);
 
